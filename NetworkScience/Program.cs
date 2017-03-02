@@ -110,8 +110,8 @@ namespace NetworkScience
 
     class Program
     {
-        private const string DOCDB_URL = "https://iiis-graphview-test2.documents.azure.com:443/";
-        private const string DOCDB_AUTHKEY = "Rzxzs7fklFYQApb0VWIx2fP3AakbCBDxfuzoQrFg5Ysuh6zlKkOTzOf091fYieteKQ72qtwsdggyAq6tMN6J6w==";
+        private const string DOCDB_URL = "https://localhost:8081";
+        private const string DOCDB_AUTHKEY = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
         private const string DOCDB_DATABASE = "NetworkS";
         private const string DOCDB_COLLECTION = "TEST";
 

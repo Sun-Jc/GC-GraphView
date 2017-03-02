@@ -53,12 +53,20 @@ namespace GraphView
     /// </summary>
     public partial class GraphViewConnection : IDisposable
     {
+        internal static int InClauseLimit { get; } = 1000;
+
+
         public string DocDBUrl { get; }
         public string DocDBPrimaryKey { get; }
         public string DocDBDatabaseId { get; }
         public string DocDBCollectionId { get; }
 
         public bool UseReverseEdges { get; set; }
+
+        /// <summary>
+        /// Whether to generate "_edgeId" for edgeObject
+        /// </summary>
+        public bool GenerateEdgeId { get; } = true;
 
         /// <summary>
         /// Spill if how many edges are in a edge-document?

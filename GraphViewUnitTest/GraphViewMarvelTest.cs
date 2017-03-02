@@ -11,8 +11,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void SelectMarvelQuery1()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
 
             GraphViewCommand graph = new GraphViewCommand(connection);
@@ -28,8 +28,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void SelectMarvelQuery1b()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
 
             GraphViewCommand cmd = new GraphViewCommand(connection);
@@ -47,8 +47,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void SelectMarvelQuery1c()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
 
             GraphViewCommand cmd = new GraphViewCommand(connection);
@@ -66,8 +66,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void SelectMarvelQuery2()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
             GraphViewCommand graph = new GraphViewCommand(connection);
 
@@ -90,8 +90,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void SelectMarvelQuery2b()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
             GraphViewCommand graph = new GraphViewCommand(connection);
             graph.CommandText = "g.V().has('weapon', 'lasso').as('character').out('appeared').as('comicbook').select('comicbook').next()";
@@ -107,8 +107,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void SelectMarvelQuery3()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
             GraphViewCommand graph = new GraphViewCommand(connection);
             var results = graph.g().V().Has("name", "AVF 4").In("appeared").Values("name").Next();
@@ -122,8 +122,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void SelectMarvelQuery3b()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
             GraphViewCommand graph = new GraphViewCommand(connection);
             graph.CommandText = "g.V().has('name', 'AVF 4').in('appeared').values('name').next()";
@@ -138,8 +138,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void SelectMarvelQuery4()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
             GraphViewCommand graph = new GraphViewCommand(connection);
             var results = graph.g().V().Has("name", "AVF 4").In("appeared").Has("weapon", "shield").Values("name").Next();
@@ -153,8 +153,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void SelectMarvelQuery4b()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
             GraphViewCommand graph = new GraphViewCommand(connection);
             graph.CommandText = "g.V().has('name', 'AVF 4').in('appeared').has('weapon', 'shield').values('name').next()";
@@ -172,8 +172,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void SelectMarvelQueryNativeAPI1()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
             GraphViewCommand graph = new GraphViewCommand(connection);
             var results =
@@ -193,8 +193,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void SelectMarvelQueryNativeAPI2()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
             GraphViewCommand graph = new GraphViewCommand(connection);
             var results =
@@ -219,8 +219,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void GraphViewMarvelInsertDeleteTest()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
             connection.ResetCollection();
             GraphViewCommand graph = new GraphViewCommand(connection);
@@ -237,8 +237,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void GraphViewMarvelInsertTest()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelTest");
             connection.ResetCollection();
             GraphViewCommand cmd = new GraphViewCommand(connection);

@@ -13,6 +13,30 @@ namespace GraphView
     internal static class EdgeDocumentHelper
     {
         /// <summary>
+        /// To check whether the vertex has spilled edge-document
+        /// </summary>
+        /// <param name="vertexObject"></param>
+        /// <param name="checkReverse">true if check the incoming edges, false if check the outgoing edges</param>
+        /// <returns></returns>
+        public static bool IsSpilledVertex(JObject vertexObject, bool checkReverse)
+        {
+            Debug.Assert(vertexObject != null);
+
+            JToken edgeContainer = vertexObject[checkReverse ? "_reverse_edge" : "_edge"];
+            if (edgeContainer is JObject) {
+                Debug.Assert(edgeContainer["_edges"] is JArray);
+                return true;
+            }
+            else if (edgeContainer is JArray) {
+                return false;
+            }
+            else {
+                throw new Exception("Should not get here!");
+            }
+        }
+
+
+        /// <summary>
         /// Try to upload one document. 
         /// If the operation fails because document is too large, nothing is changed and "tooLarge" is set true.
         /// If the operation fails due to other reasons, nothing is changed and an exception is thrown
@@ -45,7 +69,7 @@ namespace GraphView
         /// <param name="sinkId"></param>
         /// <param name="srcVertexField"></param>
         /// <param name="sinkVertexField"></param>
-        /// <param name="edgeJsonString"></param>
+        /// <param name="edgeJsonObject"></param>
         /// <param name="srcVertexObject"></param>
         /// <param name="sinkVertexObject"></param>
         /// <param name="outEdgeObject"></param>
@@ -56,7 +80,7 @@ namespace GraphView
             GraphViewConnection connection,
             string srcId, string sinkId,
             VertexField srcVertexField, VertexField sinkVertexField,
-            string edgeJsonString,
+            JObject edgeJsonObject,
             JObject srcVertexObject, JObject sinkVertexObject,
             out JObject outEdgeObject, out string outEdgeDocID,
             out JObject inEdgeObject, out string inEdgeDocID)
@@ -64,8 +88,15 @@ namespace GraphView
             long edgeOffset = (long)srcVertexObject["_nextEdgeOffset"];
             srcVertexObject["_nextEdgeOffset"] = edgeOffset + 1;
 
-            outEdgeObject = JObject.Parse(edgeJsonString);
-            inEdgeObject = (JObject)outEdgeObject.DeepClone();
+            outEdgeObject = (JObject)edgeJsonObject.DeepClone();
+            inEdgeObject = (JObject)edgeJsonObject.DeepClone();
+
+            // Add "id" property to edgeObject if desired
+            if (connection.GenerateEdgeId) {
+                string guid = GraphViewConnection.GenerateDocumentId();
+                outEdgeObject["_edgeId"] = guid;
+                inEdgeObject["_edgeId"] = guid;
+            }
 
             string srcLabel = srcVertexObject["label"]?.ToString();
             string sinkLabel = sinkVertexObject["label"]?.ToString();

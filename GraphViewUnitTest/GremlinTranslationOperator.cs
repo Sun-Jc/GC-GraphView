@@ -17,8 +17,8 @@ namespace GremlinTranslationOperator.Tests
         [TestMethod]
         public void ExecutingGraphTraversalString()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "Modern");
 
             
@@ -32,8 +32,8 @@ namespace GremlinTranslationOperator.Tests
         [TestMethod]
         public void TestModernGraph()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "Rzxzs7fklFYQApb0VWIx2fP3AakbCBDxfuzoQrFg5Ysuh6zlKkOTzOf091fYieteKQ72qtwsdggyAq6tMN6J6w==;",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "Modern");
             connection.ResetCollection();
 
@@ -51,18 +51,15 @@ namespace GremlinTranslationOperator.Tests
             graph.g().V().Has("name", "marko").AddE("knows").To(graph.g().V().Has("name", "lop")).Next();
             graph.g().V().Has("name", "peter").AddE("created").To(graph.g().V().Has("name", "lop")).Next();
             graph.g().V().Has("name", "josh").AddE("created").To(graph.g().V().Has("name", "lop")).Next();
-            var x = graph.g().V().Has("name", "josh").AddE("created").To(graph.g().V().Has("name", "ripple")).Next();
-            foreach (var i in x)
-            {
-                System.Console.WriteLine(i);
-            }
+            graph.g().V().Has("name", "josh").AddE("created").To(graph.g().V().Has("name", "ripple")).Next();
+
         }
 
         [TestMethod]
         public void TestExecuteCommandText()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "Modern");
             GraphViewCommand graph = new GraphViewCommand(connection);
 
@@ -89,8 +86,8 @@ namespace GremlinTranslationOperator.Tests
         [TestMethod]
         public void TestStep()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "Modern");
             //connection.ResetCollection();
             GraphViewCommand graph = new GraphViewCommand(connection);
@@ -307,8 +304,8 @@ namespace GremlinTranslationOperator.Tests
         [TestMethod]
         public void InsertMarvelData()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://iiis-graphview-test2.documents.azure.com:443/",
-                "sVH2R1wNSCVo7immlaZMKoiEB2As3a6aEVmxvlstI3IRVOnnvA3Ks5cnIJHRPKuPKFrOdgGqgnjoMVUpcdnBUA==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
                 "GroupMatch", "MarvelUniverse");
 
             GraphViewCommand graph = new GraphViewCommand(connection);

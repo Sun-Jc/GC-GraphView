@@ -139,10 +139,12 @@ namespace NetworkScience
 
     class Program
     {
-        private const string DOCDB_URL = "https://localhost:8081";
-        private const string DOCDB_AUTHKEY = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
+        //private const string DOCDB_URL = "https://localhost:8081";
+        private const string DOCDB_URL = "https://iiis-graphview-test2.documents.azure.com:443/";
+        //private const string DOCDB_AUTHKEY = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
+        private const string DOCDB_AUTHKEY = "Rzxzs7fklFYQApb0VWIx2fP3AakbCBDxfuzoQrFg5Ysuh6zlKkOTzOf091fYieteKQ72qtwsdggyAq6tMN6J6w";
         private const string DOCDB_DATABASE = "NetworkS";
-        private const string DOCDB_COLLECTION = "TEST";
+        private const string DOCDB_COLLECTION = "btntest";
 
         private const string NODE_LABEL = "user";
         private const string EDGE_LABEL = "transfer";
@@ -184,12 +186,12 @@ namespace NetworkScience
                     if (!nodes.Contains(start))
                     {
                         graph.g().AddV(NODE_LABEL).Property(NODE_PROPERTY, start).Next();
-                        System.Console.WriteLine("Node " + start + " added");
+                        //System.Console.WriteLine("Node " + start + " added");
                     }
                     if (!nodes.Contains(end))
                     {
                         graph.g().AddV(NODE_LABEL).Property(NODE_PROPERTY, end).Next();
-                        System.Console.WriteLine("Node " + end + " added");
+                        //System.Console.WriteLine("Node " + end + " added");
                     }
                     nodes.Add(start);
                     nodes.Add(end);
@@ -197,7 +199,7 @@ namespace NetworkScience
                     graph.g().V().Has(NODE_PROPERTY, start).
                            AddE(EDGE_LABEL).Property(EDGE_PROPERTY, amount).
                            To(graph.g().V().Has(NODE_PROPERTY, end)).Next();
-                    System.Console.WriteLine("Edge: " + start + "-> " + end + ": " + amount + " added");
+                    //System.Console.WriteLine("Edge: " + start + "-> " + end + ": " + amount + " added");
                 }
             }
             System.Console.WriteLine("Graph created\n");
@@ -229,7 +231,7 @@ namespace NetworkScience
                           AddE(EDGE_LABEL).Property(EDGE_PROPERTY, sum).
                           To(graph.g().V().Has(NODE_PROPERTY, dst)).Next();
 
-                    System.Console.WriteLine("Merged Edge: " + src + "-> " + dst + ": " + sum + " added");
+                    //System.Console.WriteLine("Merged Edge: " + src + "-> " + dst + ": " + sum + " added");
                 }
             }
             System.Console.WriteLine("Edge Merged\n");
@@ -320,7 +322,7 @@ namespace NetworkScience
                 gc.Union(start, end);
                 ratios.Add(gc.GCRatio());
 
-                System.Console.WriteLine("Connect " + start + " and " + end + ": " + gc.GCRatio());
+                //System.Console.WriteLine("Connect " + start + " and " + end + ": " + gc.GCRatio());
             }
             return ratios;
         }

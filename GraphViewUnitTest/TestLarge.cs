@@ -17,8 +17,8 @@ namespace GraphViewUnitTest
         private const string DOCDB_AUTHKEY = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
         private const string DOCDB_DATABASE = "Wenbin";
 #else
-        private const string DOCDB_URL = "https://graphview.documents.azure.com:443/";
-        private const string DOCDB_AUTHKEY = "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==";
+        private const string DOCDB_URL = "https://localhost:8081/";
+        private const string DOCDB_AUTHKEY = " C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
         private const string DOCDB_DATABASE = "Temperary";
 #endif
 

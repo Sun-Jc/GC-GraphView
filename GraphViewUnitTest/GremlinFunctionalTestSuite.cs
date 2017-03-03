@@ -16,8 +16,8 @@ namespace GraphViewUnitTest
     {
         static GraphViewConnection GetGraphViewConnection()
         {
-            return new GraphViewConnection("https://graphview.documents.azure.com:443/",
-                "MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
+            return new GraphViewConnection("https://localhost:8081/",
+                " C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
                 "GroupMatch", "GremlinFunctionalTestSuite");
 
             //return new GraphViewConnection("https://localhost:8081/",

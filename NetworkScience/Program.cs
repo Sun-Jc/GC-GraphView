@@ -14,70 +14,99 @@ namespace NetworkScience
 {
     class UnionFind
     {
-        private SortedDictionary<string, string> ids = new SortedDictionary<string, string>();
+        private SortedDictionary<string, string> root = new SortedDictionary<string, string>();
         private SortedDictionary<string, int> rank = new SortedDictionary<string, int>();
+        private SortedDictionary<string, int> size = new SortedDictionary<string, int>();
 
-        public void Add(string obj)
+        int gcSize = 0;
+        int totalSize = 0;
+
+        private void updateC(int size)
         {
-            if (!ids.ContainsKey(obj))
+            if(size > gcSize)
             {
-                ids[obj] = obj;
-                rank[obj] = 0;
+                gcSize = size;
+                System.Console.WriteLine("update " + gcSize);
             }
         }
 
-        /// <summary>
-        /// Checks whether two provided points are connected
-        /// </summary>
-        /// <returns>True if elements are connected</returns>
-        public bool Connected(string p, string q)
+        public double GCRatio()
+        {
+            if(totalSize > 0)
+            {
+                return gcSize / (0.0 + totalSize);
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        public void Add(string obj)
+        {
+            if (!root.ContainsKey(obj))
+            {
+                root[obj] = obj;
+                rank[obj] = 0;
+                size[obj] = 1;
+                totalSize += 1;
+            }
+        }
+
+        public bool isConnected(string p, string q)
         {
             return Root(p) == Root(q);
         }
 
-        /// <summary>
-        /// Makes a connection between first and second element
-        /// </summary>
         public void Union(string p, string q)
         {
-            Add(p);
-            Add(q);
+            if(!root.ContainsKey(p) || !root.ContainsKey(q))
+            {
+                throw new Exception("Trying to connect node that has not been added");
+            }
 
-            if (Connected(p, q))
+            if (isConnected(p, q))
                 return;
 
             string rootP = Root(p);
             string rootQ = Root(q);
             if (rank[rootP] < rank[rootQ])
             {
-                ids[rootP] = rootQ;
+                root[rootP] = rootQ;
+                size[rootQ] += size[rootP];
             }
             else if(rank[rootP] > rank[rootQ])
             {
-                ids[rootQ] = rootP;   
+                root[rootQ] = rootP;
+                size[rootP] += size[rootQ];
+
             }
             else
             {
-                ids[rootQ] = rootP;
+                root[rootQ] = rootP;
                 rank[rootP] += 1;
+                size[rootP] += size[rootQ];
             }
+            updateC(size[rootQ]);
+            updateC(size[rootP]);
         }
 
         private string Root(string el)
         {
-            if(ids[el] != el)
+            if(root[el] != el)
             {
-                ids[el] = Root(ids[el]);
+                root[el] = Root(root[el]);
             }
-            return ids[el];
+            return root[el];
         }
 
-        public double GiantComponentRatio()
+
+        /*public double GiantComponentRatio()
         {
             SortedDictionary<string, int> componentCount = new SortedDictionary<string, int>();
-            foreach(string k in ids.Keys)
+            foreach(string k in root.Keys)
             {
-                var root = ids[k];
+                var root = this.root[k];
                 if (componentCount.ContainsKey(root))
                 {
                     componentCount[root] = componentCount[root] + 1;
@@ -105,7 +134,7 @@ namespace NetworkScience
             {
                 return -1;
             }
-        }
+        }*/
     }
 
     class Program
@@ -120,7 +149,12 @@ namespace NetworkScience
         private const string NODE_PROPERTY = "idx";
         private const string EDGE_PROPERTY = "amount";
 
+        private const string CONNECT_EDGE_LABEL = "connected";
+        private const string CONNECT_EDGE_PROPERTY = "total amount";
+
         private const string INPUT_EDGE = @"c:\edges.csv";
+        private const string OUTPUT_RATIOS = @"gc_ratios.csv";
+      
 
         static void createGraph()
         {
@@ -166,7 +200,7 @@ namespace NetworkScience
                     System.Console.WriteLine("Edge: " + start + "-> " + end + ": " + amount + " added");
                 }
             }
-            System.Console.WriteLine("Graph created");
+            System.Console.WriteLine("Graph created\n");
         }
 
         static private void mergeEdges()
@@ -198,42 +232,109 @@ namespace NetworkScience
                     System.Console.WriteLine("Merged Edge: " + src + "-> " + dst + ": " + sum + " added");
                 }
             }
-            System.Console.WriteLine("Edge Merged");
+            System.Console.WriteLine("Edge Merged\n");
         }
 
+        static private bool threshold_reached(double amount1, double amount2)
+        {
+            const double SINGLE_THRESHOLD = 0.05;
+            const double SUM_THRESHOLD = 0.1;
+            return (amount1 > SINGLE_THRESHOLD && amount2 > SINGLE_THRESHOLD
+                && amount1 + amount2 > SUM_THRESHOLD) ;
+        }
 
         static private List<double> dynamicConnectivity()
         {
             GraphViewConnection connection = new GraphViewConnection(DOCDB_URL, DOCDB_AUTHKEY, DOCDB_DATABASE, DOCDB_COLLECTION);
             GraphViewCommand graph = new GraphViewCommand(connection);
-            UnionFind gc = new UnionFind();
+
+            //TODO: order by method of GraphView not implemented yet, have to sort locally here
+            List<Tuple<string, string, double>> edges = new List<Tuple<string, string, double>>();
+            HashSet<string> nodes = new HashSet<string>();
+
+            var src_res = graph.g().V().Values(NODE_PROPERTY).Next();
+            foreach (var src in src_res)
+            {
+                var dst_res = graph.g().V().Has(NODE_PROPERTY, src).Out().Values(NODE_PROPERTY).Dedup().Next();
+                foreach (var dst in dst_res)
+                {
+                    double outAmount = -1;
+                    double inAmount = -1;
+
+                    // TODO: bothE not implemented, have so explictly call twice
+                    var edges_res = graph.g().V().Has(NODE_PROPERTY, src).OutE(EDGE_LABEL).As("e").
+                        InV().Has(NODE_PROPERTY, dst).Select("e").Values(EDGE_PROPERTY).Next();
+                    foreach (var value in edges_res)
+                    {
+                        outAmount = double.Parse(value, CultureInfo.InvariantCulture);
+                    }
+                    edges_res = graph.g().V().Has(NODE_PROPERTY, dst).OutE(EDGE_LABEL).As("e").
+                        InV().Has(NODE_PROPERTY, src).Select("e").Values(EDGE_PROPERTY).Next();
+                    foreach (var value in edges_res)
+                    {
+                        inAmount = double.Parse(value, CultureInfo.InvariantCulture);
+                    }
+
+                    if(threshold_reached(inAmount, outAmount))
+                    {
+                        edges.Add(new Tuple<string,string,double>(src, dst, inAmount + outAmount));
+                        nodes.Add(src);
+                        nodes.Add(dst);
+
+                        graph.g().V().Has(NODE_PROPERTY, src).
+                            AddE(CONNECT_EDGE_LABEL).Property(CONNECT_EDGE_PROPERTY, inAmount + outAmount).
+                                To(graph.g().V().Has(NODE_PROPERTY, dst)).Next();
+
+                        graph.g().V().Has(NODE_PROPERTY, src).OutE(EDGE_LABEL).As("e").
+                            InV().Has(NODE_PROPERTY, dst).Select("e").Drop().Next();
+
+                        graph.g().V().Has(NODE_PROPERTY, dst).OutE(EDGE_LABEL).As("e").
+                            InV().Has(NODE_PROPERTY, src).Select("e").Drop().Next();
+
+                        //System.Console.WriteLine("Add connected edge: "+src+" <-> "+dst+" : "+(inAmount+outAmount));
+                    }
+                }
+            }
+
+            edges.Sort((x, y) => { return x.Item3.CompareTo(y.Item3); });
+
+            foreach(var i in edges)
+            {
+                System.Console.WriteLine(i);
+            }
 
             List<double> ratios = new List<double>();
 
-            var nodes_res = graph.g().V().Values(NODE_PROPERTY).Next();
+            UnionFind gc = new UnionFind();
 
-            foreach(var node in nodes_res)
+            foreach(var node in nodes)
             {
                 gc.Add(node);
             }
 
-            var edges_sorted_res = graph.g().E().Next();
-
-            foreach(var edge in edges_sorted_res)
+            foreach(var edge in edges)
             {
-                string start = "";
-                string end = "";
-                double startValue = 0;
-                double endValue = 0;
+                string start = edge.Item1;
+                string end = edge.Item2;
+               
+                gc.Union(start, end);
+                ratios.Add(gc.GCRatio());
 
-                if (true)
+                System.Console.WriteLine("Connect " + start + " and " + end + ": " + gc.GCRatio());
+            }
+            return ratios;
+        }
+
+        private static void writeResults(List<double> list)
+        {
+            using (System.IO.StreamWriter file =
+              new System.IO.StreamWriter(OUTPUT_RATIOS))
+            {
+                foreach (double res in list)
                 {
-                    gc.Connected(start, end);
-                    ratios.Add(gc.GiantComponentRatio());
+                    file.WriteLine(res);
                 }
             }
-
-            return ratios;
         }
 
 
@@ -243,19 +344,24 @@ namespace NetworkScience
             createGraph();
             mergeEdges();
 
+            writeResults( dynamicConnectivity());
 
             //test();
+
+            System.Console.Write("Finished");
+            System.Console.ReadKey();
         }
 
         static void test()
         {
-            GraphViewConnection connection = new GraphViewConnection(DOCDB_URL, DOCDB_AUTHKEY, DOCDB_DATABASE, "tmp");
-            connection.ResetCollection();
+            GraphViewConnection connection = 
+                new GraphViewConnection(DOCDB_URL, DOCDB_AUTHKEY, DOCDB_DATABASE, DOCDB_COLLECTION);
+            //connection.ResetCollection();
             GraphViewCommand graph = new GraphViewCommand(connection);
 
             try
             {
-                graph.g().AddV(NODE_LABEL).Property(NODE_PROPERTY, "1").Next();
+                /*graph.g().AddV(NODE_LABEL).Property(NODE_PROPERTY, "1").Next();
                 graph.g().AddV(NODE_LABEL).Property(NODE_PROPERTY, "3").Next();
                 graph.g().AddV(NODE_LABEL).Property(NODE_PROPERTY, "2").Next();
 
@@ -267,12 +373,13 @@ namespace NetworkScience
                               To(graph.g().V().Has(NODE_PROPERTY, "3")).Next();
                 graph.g().V().Has(NODE_PROPERTY, "1").
                               AddE(EDGE_LABEL).Property(EDGE_PROPERTY, 12).
-                              To(graph.g().V().Has(NODE_PROPERTY, "2")).Next();
+                              To(graph.g().V().Has(NODE_PROPERTY, "2")).Next();*/
 
-                graph.CommandText = "g.E().Order().By("+EDGE_PROPERTY+", incr)";
-                var res= graph.Execute();
+                //graph.CommandText = "g.E().Order().By("+EDGE_PROPERTY+", incr)";
+                //var res= graph.Execute();
 
-                //var res = graph.g().E().Order().By(EDGE_PROPERTY).Values(EDGE_PROPERTY).Next();
+                var res = graph.g().V().Has(NODE_PROPERTY, "7").OutE(EDGE_LABEL).As("e").
+                      InV().Has(NODE_PROPERTY, "5").Select("e").Drop().Next();
 
                 //graph.g().V().Has(NODE_PROPERTY, "1").OutE(EDGE_LABEL).As("e").InV().Has(NODE_PROPERTY, "2").Select("e").Drop().Next();
 
@@ -282,16 +389,10 @@ namespace NetworkScience
                 }
                 System.Console.WriteLine("");
 
-                res = graph.g().V().Has(NODE_PROPERTY, "1").Out().Values(NODE_PROPERTY).Next();
-
-                foreach (var x in res)
-                {
-                    System.Console.WriteLine(x);
-                }
             }
             finally
             {
-                connection.ResetCollection();
+                //connection.ResetCollection();
             }
         }
     }

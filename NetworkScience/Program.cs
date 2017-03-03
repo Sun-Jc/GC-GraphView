@@ -26,7 +26,7 @@ namespace NetworkScience
             if(size > gcSize)
             {
                 gcSize = size;
-                System.Console.WriteLine("update " + gcSize);
+                //System.Console.WriteLine("update " + gcSize);
             }
         }
 
@@ -298,10 +298,10 @@ namespace NetworkScience
 
             edges.Sort((x, y) => { return x.Item3.CompareTo(y.Item3); });
 
-            foreach(var i in edges)
+            /*foreach(var i in edges)
             {
                 System.Console.WriteLine(i);
-            }
+            }*/
 
             List<double> ratios = new List<double>();
 

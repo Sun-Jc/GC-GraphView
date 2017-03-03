@@ -166,12 +166,12 @@ namespace NetworkScience
     class Program
     {
         // local
-        private const string DOCDB_URL = "https://localhost:8081";
-        private const string DOCDB_AUTHKEY = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
+        //private const string DOCDB_URL = "https://localhost:8081";
+        //private const string DOCDB_AUTHKEY = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
 
         // azure
-        //private const string DOCDB_URL = "https://iiis-graphview-test2.documents.azure.com:443/";
-        //private const string DOCDB_AUTHKEY = "Rzxzs7fklFYQApb0VWIx2fP3AakbCBDxfuzoQrFg5Ysuh6zlKkOTzOf091fYieteKQ72qtwsdggyAq6tMN6J6w==";
+        private const string DOCDB_URL = "https://iiis-graphview-test2.documents.azure.com:443/";
+        private const string DOCDB_AUTHKEY = "Rzxzs7fklFYQApb0VWIx2fP3AakbCBDxfuzoQrFg5Ysuh6zlKkOTzOf091fYieteKQ72qtwsdggyAq6tMN6J6w==";
 
         private const string DOCDB_DATABASE = "NetworkS";
         private const string DOCDB_COLLECTION = "btntest";
@@ -187,6 +187,7 @@ namespace NetworkScience
         private const string INPUT_EDGE = @"c:\edges.csv";
         private const string OUTPUT_ADD_FROM_WEAK = @"gc_ADD_FROM_WEAK.csv";
         private const string OUTPUT_ADD_FROM_STRONG = @"gc_ADD_FROM_STRONG.csv";
+        private const string OUTPUT_OVERLAP = @"overlap.csv";
 
 
         static void createGraph()
@@ -373,12 +374,91 @@ namespace NetworkScience
             return ratiosAndsValues;
         }
 
+        private static List<Tuple<double,double>> overlapBetweenNodes()
+        {
+            GraphViewConnection connection = new GraphViewConnection(DOCDB_URL, DOCDB_AUTHKEY, DOCDB_DATABASE, DOCDB_COLLECTION);
+            GraphViewCommand graph = new GraphViewCommand(connection);
+
+            List<Tuple<double, double>> overlap = new List<Tuple<double, double>>();
+
+            var src_res = graph.g().V().Values(NODE_PROPERTY).Next();
+            foreach (var src in src_res)
+            {
+                var dst_res = graph.g().V().Has(NODE_PROPERTY, src).Out().Values(NODE_PROPERTY).Dedup().Next();
+                foreach (var dst in dst_res)
+                {
+                    var edges_res = graph.g().V().Has(NODE_PROPERTY, src).OutE(CONNECT_EDGE_LABEL).As("e").
+                        InV().Has(NODE_PROPERTY, dst).Select("e").Values(CONNECT_EDGE_PROPERTY).Next();
+
+                    double amount = -1;
+                    foreach (var value in edges_res)
+                    {
+                        amount = double.Parse(value, CultureInfo.InvariantCulture);
+                    }
+
+                    int sCount = 0;
+                    var res = graph.g().V().Has(NODE_PROPERTY, src).Out().Next();
+                    foreach (var i in res)
+                    {
+                        sCount++;
+                    }
+                    res = graph.g().V().Has(NODE_PROPERTY, src).In().Next();
+                    foreach (var i in res)
+                    {
+                        sCount++;
+                    }
+
+                    int dCount = 0;
+                    res = graph.g().V().Has(NODE_PROPERTY, dst).Out().Next();
+                    foreach (var i in res)
+                    {
+                        dCount++;
+                    }
+                    res = graph.g().V().Has(NODE_PROPERTY, dst).In().Next();
+                    foreach (var i in res)
+                    {
+                        dCount++;
+                    }
+
+                    int nCount = 0;
+                    res = graph.g().V().Has(NODE_PROPERTY, src).In().In().Has(NODE_PROPERTY, dst).Next();
+                    foreach (var i in res)
+                    {
+                        nCount++;
+                    }
+
+                    res = graph.g().V().Has(NODE_PROPERTY, src).Out().Out().Has(NODE_PROPERTY, dst).Next();
+                    foreach (var i in res)
+                    {
+                        nCount++;
+                    }
+
+                    res = graph.g().V().Has(NODE_PROPERTY, src).In().Out().Has(NODE_PROPERTY, dst).Next();
+                    foreach (var i in res)
+                    {
+                        nCount++;
+                    }
+
+                    res = graph.g().V().Has(NODE_PROPERTY, src).Out().In().Has(NODE_PROPERTY, dst).Next();
+                    foreach (var i in res)
+                    {
+                        nCount++;
+                    }
+
+                    overlap.Add(new Tuple<double, double>( (nCount+0.0) / (sCount + dCount - 2 - nCount), amount));
+
+                }
+            }
+
+            return overlap;
+        }
+
         private static void writeResults(string filename, List<Tuple<double,double>> list)
         {
             using (System.IO.StreamWriter file =
               new System.IO.StreamWriter(filename))
             {
-                file.WriteLine("R,S");
+                file.WriteLine("RATIO/OVERLAP,S/STRENGTH");
                 foreach (var res in list)
                 {
                     file.WriteLine(res.Item1+","+res.Item2);
@@ -387,23 +467,24 @@ namespace NetworkScience
         }
 
 
-
         static void Main(string[] args)
         {
-            createGraph();
+            /*createGraph();
             System.Console.WriteLine("Graph created\n");
 
             mergeEdges();
             System.Console.WriteLine("Edge Merged\n");
 
             validConnect();
-            System.Console.WriteLine("Edge Evaluation Done\n");
+            System.Console.WriteLine("Edge Evaluation Done\n");*/
 
             Parallel.Invoke(
                 () => writeResults(OUTPUT_ADD_FROM_WEAK, connectivityByAddingEdgesOrderly(true)),
-                () => writeResults(OUTPUT_ADD_FROM_STRONG, connectivityByAddingEdgesOrderly(false)));
+                () => writeResults(OUTPUT_ADD_FROM_STRONG, connectivityByAddingEdgesOrderly(false)),
+                () => writeResults(OUTPUT_OVERLAP, overlapBetweenNodes()));
+                
+            //test();
 
-           // test();
 
             System.Console.Write("Finished");
             System.Console.ReadKey();
@@ -435,28 +516,19 @@ namespace NetworkScience
                 //graph.CommandText = "g.E().Order().By("+EDGE_PROPERTY+", incr)";
                 //var res= graph.Execute();
 
-                //var res = graph.g().E().HasLabel(CONNECT_EDGE_LABEL).BothV().Next();
+                var res = graph.g().V().Has(NODE_PROPERTY,"12").BothV().Has(NODE_PROPERTY,"2").Values(NODE_PROPERTY).Next();
 
                 //graph.g().V().Has(NODE_PROPERTY, "1").OutE(EDGE_LABEL).As("e").InV().Has(NODE_PROPERTY, "2").Select("e").Drop().Next();
 
-                /*foreach (var x in res)
+                foreach (var x in res)
                 {
                     System.Console.WriteLine(x);
 
-                }*/
+                }
                 System.Console.WriteLine("");
 
 
-                SortedDictionary<string, int> x = new SortedDictionary<string, int>();
-                x.Add("x", 12);
-                x.Add("y", 123);
-                x.Add("z", 12);
-
-                foreach(var i in x.Values.Distinct())
-                {
-                    System.Console.WriteLine(i);
-                }
-
+            
 
             }
             finally

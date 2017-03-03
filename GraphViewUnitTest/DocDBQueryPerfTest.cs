@@ -14,8 +14,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void query1()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://localhost:8081/",
-" C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+"MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
 "GroupMatch", "IOTTest");
             var expTimes = 100;
             var sumTime = 0.0;
@@ -59,8 +59,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void query1_RandomId()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://localhost:8081/",
-" C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+"MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
 "GroupMatch", "IOTTest");
 
             GraphViewCommand graph = new GraphViewCommand(connection);
@@ -105,8 +105,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void query2()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://localhost:8081/",
-" C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+"MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
 "GroupMatch", "IOTTest");
             GraphViewCommand graph = new GraphViewCommand(connection);
 
@@ -153,8 +153,8 @@ namespace GraphViewUnitTest
         [TestMethod]
         public void query2_RandomId()
         {
-            GraphViewConnection connection = new GraphViewConnection("https://localhost:8081/",
-" C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+            GraphViewConnection connection = new GraphViewConnection("https://graphview.documents.azure.com:443/",
+"MqQnw4xFu7zEiPSD+4lLKRBQEaQHZcKsjlHxXn2b96pE/XlJ8oePGhjnOofj1eLpUdsfYgEhzhejk2rjH/+EKA==",
 "GroupMatch", "IOTTest");
             GraphViewCommand graph = new GraphViewCommand(connection);
             var expTimes = 100;

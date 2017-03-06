@@ -187,12 +187,12 @@ namespace NetworkScience
     class Program
     {
         // local
-        private const string DOCDB_URL = "https://localhost:8081";
-        private const string DOCDB_AUTHKEY = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
+        //private const string DOCDB_URL = "https://localhost:8081";
+        //private const string DOCDB_AUTHKEY = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
 
         // azure
-        //private const string DOCDB_URL = "https://iiis-graphview-test2.documents.azure.com:443/";
-        //private const string DOCDB_AUTHKEY = "Rzxzs7fklFYQApb0VWIx2fP3AakbCBDxfuzoQrFg5Ysuh6zlKkOTzOf091fYieteKQ72qtwsdggyAq6tMN6J6w==";
+        private const string DOCDB_URL = "https://iiis-graphview-test2.documents.azure.com:443/";
+        private const string DOCDB_AUTHKEY = "Rzxzs7fklFYQApb0VWIx2fP3AakbCBDxfuzoQrFg5Ysuh6zlKkOTzOf091fYieteKQ72qtwsdggyAq6tMN6J6w==";
 
         private const string DOCDB_DATABASE = "NetworkS";
         private const string DOCDB_COLLECTION = "btntest_par";
@@ -905,18 +905,15 @@ namespace NetworkScience
 
             displayKey();
 
-            int stage = (int)key.GetValue(KEY_STAGE, -1);
+            //int stage = (int)key.GetValue(KEY_STAGE, -1);
 
-            switch (stage)
+            switch (args[0])
             {
-                case 0: { build_local(); key.SetValue(KEY_STAGE, 1); goto case 1; }
-                case 1: { addNodeAll(PAR); key.SetValue(KEY_STAGE, 2); goto case 2; }
-                case 2: { addEdgesAll(PAR); key.SetValue(KEY_STAGE, 3); goto case 3; }
-                case 3: { var res = countVE();
-                        System.Console.WriteLine("nodes: " + res.Item1 + "; edges: " + res.Item2);
-                        mergeEdges(); key.SetValue(KEY_STAGE, 4);  goto case 4; }
-                case 4: { validConnect(); key.SetValue(KEY_STAGE, 5); goto case 5; }
-                case 5:
+                case "split": { build_local(); key.SetValue(KEY_STAGE, 1); break; }
+                case "node": { addNodeAll(PAR); key.SetValue(KEY_STAGE, 2); break; }
+                case "edge": { addEdgesAll(PAR); key.SetValue(KEY_STAGE, 3); break; }
+                case "connect": { validConnect(); key.SetValue(KEY_STAGE, 5); break; }
+                case "compute":
                     Parallel.Invoke(
                                 () => writeResults(OUTPUT_ADD_FROM_WEAK, connectivityByAddingEdgesOrderly(true)),
                                 () => writeResults(OUTPUT_ADD_FROM_STRONG, connectivityByAddingEdgesOrderly(false)),

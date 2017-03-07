@@ -175,11 +175,11 @@ namespace NetworkScience
             var key = new Tuple<string, string>(from, to);
             if (edges.ContainsKey(key))
             {
-               edges[key]= edges[key] + amount;
+                edges[key] = edges[key] + amount;
             }
             else
             {
-               edges.Add(key, amount);
+                edges.Add(key, amount);
             }
         }
     }
@@ -202,8 +202,8 @@ namespace NetworkScience
         private const string NODE_PROPERTY = "idx";
         private const string EDGE_PROPERTY = "amount";
 
-        private const string CONNECT_EDGE_LABEL = "connected";
-        private const string CONNECT_EDGE_PROPERTY = "total amount";
+        private const string CONNECT_EDGE_LABEL = EDGE_LABEL;//"connected";
+        private const string CONNECT_EDGE_PROPERTY = EDGE_PROPERTY;//"total amount";
 
         private const string INPUT_EDGE = @"c:\edges.csv";
         private const string OUTPUT_ADD_FROM_WEAK = @"gc_ADD_FROM_WEAK.csv";
@@ -223,91 +223,90 @@ namespace NetworkScience
         private static string KEY_PAR_EDGE = "edge_par_";
 
 
-       /* static void split()
-        {
-            HashSet<string> nodes = new HashSet<string>();
+        /* static void split()
+         {
+             HashSet<string> nodes = new HashSet<string>();
 
-            using (TextFieldParser parser = new TextFieldParser(INPUT_EDGE))
-            {
-                parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(",");
-                while (!parser.EndOfData)
-                {
-                    string[] fields = parser.ReadFields();
-                    string start = fields[1];
-                    string end = fields[2];
+             using (TextFieldParser parser = new TextFieldParser(INPUT_EDGE))
+             {
+                 parser.TextFieldType = FieldType.Delimited;
+                 parser.SetDelimiters(",");
+                 while (!parser.EndOfData)
+                 {
+                     string[] fields = parser.ReadFields();
+                     string start = fields[1];
+                     string end = fields[2];
 
-                    // remove self circle
-                    if (start.Equals(end))
-                    {
-                        continue;
-                    }
-                    nodes.Add(start);
-                    nodes.Add(end);
-                }
-            }
+                     // remove self circle
+                     if (start.Equals(end))
+                     {
+                         continue;
+                     }
+                     nodes.Add(start);
+                     nodes.Add(end);
+                 }
+             }
 
-            List<string> nodeList = nodes.ToList();
-            int M = (int)Math.Ceiling( (nodeList.Count +0.0) / PAR);
+             List<string> nodeList = nodes.ToList();
+             int M = (int)Math.Ceiling( (nodeList.Count +0.0) / PAR);
 
-            //debug.print(nodeList.Count+"");
+             //debug.print(nodeList.Count+"");
 
-            for (int i = 0; i < PAR; i++)
-            {
-                using (System.IO.StreamWriter file =
-                    new System.IO.StreamWriter(INTER_NODES + i))
-                {
-                    for (int j = M * i; j < Math.Min(M * (i + 1), nodeList.Count); j++)
-                    {
-                        file.WriteLine(nodeList[j]);
-                        //debug.print(j + "");
-                    }
-                }
-            }
+             for (int i = 0; i < PAR; i++)
+             {
+                 using (System.IO.StreamWriter file =
+                     new System.IO.StreamWriter(INTER_NODES + i))
+                 {
+                     for (int j = M * i; j < Math.Min(M * (i + 1), nodeList.Count); j++)
+                     {
+                         file.WriteLine(nodeList[j]);
+                         //debug.print(j + "");
+                     }
+                 }
+             }
 
-            System.IO.StreamWriter[] files = new System.IO.StreamWriter[PAR];
-            for (int i = 0; i < PAR; i++)
-            {
-                files[i] = new System.IO.StreamWriter(INTER_EDGES + i);
-            }
+             System.IO.StreamWriter[] files = new System.IO.StreamWriter[PAR];
+             for (int i = 0; i < PAR; i++)
+             {
+                 files[i] = new System.IO.StreamWriter(INTER_EDGES + i);
+             }
 
-            using (TextFieldParser parser = new TextFieldParser(INPUT_EDGE))
-            {
-                SHA256 mySHA256 = SHA256Managed.Create();
+             using (TextFieldParser parser = new TextFieldParser(INPUT_EDGE))
+             {
+                 SHA256 mySHA256 = SHA256Managed.Create();
 
-                parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(",");
-                while (!parser.EndOfData)
-                {
-                    string[] fields = parser.ReadFields();
-                    string start = fields[1];
-                    string end = fields[2];
-                    double amount = double.Parse(fields[4], CultureInfo.InvariantCulture);
+                 parser.TextFieldType = FieldType.Delimited;
+                 parser.SetDelimiters(",");
+                 while (!parser.EndOfData)
+                 {
+                     string[] fields = parser.ReadFields();
+                     string start = fields[1];
+                     string end = fields[2];
+                     double amount = double.Parse(fields[4], CultureInfo.InvariantCulture);
 
-                    // remove self circle
-                    if (start.Equals(end))
-                    {
-                        continue;
-                    }
-                    
-                    var x = start.GetHashCode();
-                    files[Math.Abs(x) % PAR].WriteLine(start + "," + end + "," + amount);
-                }
-            }
+                     // remove self circle
+                     if (start.Equals(end))
+                     {
+                         continue;
+                     }
+
+                     var x = start.GetHashCode();
+                     files[Math.Abs(x) % PAR].WriteLine(start + "," + end + "," + amount);
+                 }
+             }
 
 
-            for (int i = 0; i < PAR; i++)
-            {
-                files[i].Close();
-            }
-            System.Console.WriteLine("split");
-        }
-        */
+             for (int i = 0; i < PAR; i++)
+             {
+                 files[i].Close();
+             }
+             System.Console.WriteLine("split");
+         }
+         */
 
         static void addNodeAll(int limit)
         {
-            GraphViewConnection connection = new GraphViewConnection(DOCDB_URL, DOCDB_AUTHKEY, DOCDB_DATABASE, DOCDB_COLLECTION);
-            connection.ResetCollection();
+
             //GraphViewCommand graph = new GraphViewCommand(connection);
 
             Parallel.For(0, PAR, new ParallelOptions { MaxDegreeOfParallelism = limit }, i =>
@@ -320,7 +319,7 @@ namespace NetworkScience
                 startInfo.UseShellExecute = false;
                 startInfo.FileName = "NetworkScience.exe";
                 startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                startInfo.Arguments = "node " + i;
+                startInfo.Arguments = "node-par " + i;
 
 
                 // Start the process with the info we specified.
@@ -330,7 +329,7 @@ namespace NetworkScience
                     exeProcess.WaitForExit();
                 }
 
-                
+
             });
             System.Console.WriteLine("Nodes added");
         }
@@ -354,7 +353,7 @@ namespace NetworkScience
                     string node = fields[0];
                     if (count > process)
                     {
-                        debug.print("["+p+"]: Node " + node + " adding");
+                        debug.print("[" + p + "]: Node " + node + " adding");
                         graph.g().AddV(NODE_LABEL).Property(NODE_PROPERTY, node).Next();
 
                         key.SetValue(KEY_PAR_NODE + p, count);
@@ -378,7 +377,7 @@ namespace NetworkScience
                 startInfo.UseShellExecute = false;
                 startInfo.FileName = "NetworkScience.exe";
                 startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                startInfo.Arguments = "edge " + i;
+                startInfo.Arguments = "edge-par " + i;
 
 
                 // Start the process with the info we specified.
@@ -475,7 +474,7 @@ namespace NetworkScience
                 key.DeleteValue(KEY_STAGE);
 
             }
-            
+
             for (int i = 0; i < PAR; i++)
             {
                 if (key.GetValue(KEY_PAR_NODE + i) != null)
@@ -606,7 +605,7 @@ namespace NetworkScience
             var src_res = graph.g().V().Values(NODE_PROPERTY).Next();
             foreach (var src in src_res)
             {
-               
+
                 var dst_res = graph.g().V().Has(NODE_PROPERTY, src).Out().Values(NODE_PROPERTY).Dedup().Next();
                 foreach (var dst in dst_res)
                 {
@@ -638,7 +637,7 @@ namespace NetworkScience
                     {
                         graph.g().V().Has(NODE_PROPERTY, src).
                             AddE(CONNECT_EDGE_LABEL).Property(CONNECT_EDGE_PROPERTY, inAmount + outAmount).
-                                To(graph.g().V().Has(NODE_PROPERTY, dst)).Next();                      
+                                To(graph.g().V().Has(NODE_PROPERTY, dst)).Next();
                         debug.print("Add connected edge: " + src + " <-> " + dst + " : " + (inAmount + outAmount));
                     }
                 }
@@ -669,7 +668,7 @@ namespace NetworkScience
                         amount = double.Parse(value, CultureInfo.InvariantCulture);
                     }
 
-                    if(amount < 0)
+                    if (amount < 0)
                     {
                         continue;
                     }
@@ -846,11 +845,16 @@ namespace NetworkScience
                 files[i] = new System.IO.StreamWriter(INTER_EDGES + i);
             }
 
+            SortedDictionary<Tuple<string, string>, double> edges = new SortedDictionary<Tuple<string, string>, double>();
+
             foreach (var edge in data.edges)
             {
                 var start = edge.Key.Item1;
                 var end = edge.Key.Item2;
                 var amount = edge.Value;
+
+                var key = edge.Key;
+                var key2 = new Tuple<string, string>(end, start);
 
                 // remove self circle
                 if (start.Equals(end))
@@ -858,10 +862,37 @@ namespace NetworkScience
                     continue;
                 }
 
+                if (edges.ContainsKey(key) ||
+                    edges.ContainsKey(key2))
+                {
+                    continue;
+                }
+
+                
+                if (!data.edges.ContainsKey(key2))
+                {
+                    continue;
+                }
+
+                var amount2 = data.edges[key2];
+                
+                if (!threshold_reached(amount, amount2))
+                {
+                    continue;
+                }
+
+                edges.Add(key, amount2 + amount);
+            }
+
+            foreach(var edge in edges)
+            {
+                var start = edge.Key.Item1;
+                var end = edge.Key.Item2;
+                var amount = edge.Value;
                 var x = edge.GetHashCode();
                 files[Math.Abs(x) % PAR].WriteLine(start + "," + end + "," + amount);
             }
-            
+
 
             for (int i = 0; i < PAR; i++)
             {
@@ -871,7 +902,7 @@ namespace NetworkScience
         }
 
 
-       
+
 
 
         static void Main(string[] args)
@@ -885,14 +916,14 @@ namespace NetworkScience
                     return;
                 }
 
-                if (args.Count() >= 2 && args[0].Equals("node"))
+                if (args.Count() >= 2 && args[0].Equals("node-par"))
                 {
                     //System.Console.WriteLine("Adding nodes part "+ args[1] + " ...");
                     addNodePart(int.Parse(args[1]));
                     return;
                 }
 
-                if (args.Count() >= 2 && args[0].Equals("edge"))
+                if (args.Count() >= 2 && args[0].Equals("edge-par"))
                 {
                     //System.Console.WriteLine("Adding edges part " + args[1] + " ...");
                     addEdgesPart(int.Parse(args[1]));
@@ -912,15 +943,30 @@ namespace NetworkScience
                 switch (args[0])
                 {
                     case "split": { build_local(); key.SetValue(KEY_STAGE, 1); break; }
-                    case "node": { addNodeAll(PAR); key.SetValue(KEY_STAGE, 2); break; }
-                    case "edge": { addEdgesAll(PAR); key.SetValue(KEY_STAGE, 3); break; }
-                    case "connect": { validConnect(); key.SetValue(KEY_STAGE, 5); break; }
-                    case "compute":
-                        Parallel.Invoke(
-                                    () => writeResults(OUTPUT_ADD_FROM_WEAK, connectivityByAddingEdgesOrderly(true)),
-                                    () => writeResults(OUTPUT_ADD_FROM_STRONG, connectivityByAddingEdgesOrderly(false)),
-                                    () => writeResults(OUTPUT_OVERLAP, overlapBetweenNodes())); key.SetValue(KEY_STAGE, 6);
-                        break;
+                    case "graph":
+                        {
+                            GraphViewConnection connection = new GraphViewConnection(DOCDB_URL, DOCDB_AUTHKEY, DOCDB_DATABASE, DOCDB_COLLECTION);
+                            connection.ResetCollection();
+                            initKey();
+                            key.SetValue(KEY_STAGE, 1);
+                            break;
+                        }
+                    case "node": { addNodeAll(PAR/7); key.SetValue(KEY_STAGE, 2); break; }
+                    case "edge": { addEdgesAll(PAR/7); key.SetValue(KEY_STAGE, 3); break; }
+                    //case "connect": { validConnect(); key.SetValue(KEY_STAGE, 5); break; }
+                    case "compute":{
+                            Parallel.Invoke(
+                                     () => writeResults(OUTPUT_ADD_FROM_WEAK, connectivityByAddingEdgesOrderly(true)),
+                                     () => writeResults(OUTPUT_ADD_FROM_STRONG, connectivityByAddingEdgesOrderly(false)),
+                                     () => writeResults(OUTPUT_OVERLAP, overlapBetweenNodes())); key.SetValue(KEY_STAGE, 6);
+                            break;
+                        }
+                    case "check":
+                        {
+                            var resx = countVE();
+                            System.Console.WriteLine("nodes: " + resx.Item1 + "; edges: " + resx.Item2);
+                            break;
+                        }
                 }
 
 
@@ -941,19 +987,17 @@ namespace NetworkScience
 
 
                 //test();
-                var resx = countVE();
-                System.Console.WriteLine("nodes: " + resx.Item1 + "; edges: " + resx.Item2);
-
+                //
             }
             catch (Exception e)
             {
-
+                System.Console.WriteLine(e.Message);
             }
-            
 
 
-            System.Console.Write("Finished");
-            System.Console.ReadKey();
+
+            System.Console.Write("Finished ");
+            //System.Console.ReadKey();
         }
 
         static void test()
@@ -989,11 +1033,11 @@ namespace NetworkScience
                 /*graph.g().V().Has(NODE_PROPERTY, "198036").OutE(EDGE_LABEL).As("e").
                             InV().Has(NODE_PROPERTY, "3888").Select("e").Drop().Next();
                             */
-                var res =  graph.g().V().Has(NODE_PROPERTY, "198036").OutE(EDGE_LABEL).As("e").
+                var res = graph.g().V().Has(NODE_PROPERTY, "198036").OutE(EDGE_LABEL).As("e").
                         InV().Has(NODE_PROPERTY, "3888").Select("e").Next();
 
-                
-               
+
+
 
                 foreach (var x in res)
                 {

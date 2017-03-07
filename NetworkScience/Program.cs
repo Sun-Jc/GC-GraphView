@@ -794,7 +794,7 @@ namespace NetworkScience
             }
         }
 
-        static void build_local()
+        static SortedDictionary<Tuple<string, string>, double> build_local()
         {
             Data data = new Data();
             HashSet<string> nodes = new HashSet<string>();
@@ -899,8 +899,51 @@ namespace NetworkScience
                 files[i].Close();
             }
             System.Console.WriteLine("split");
+            return edges;
         }
 
+        static private List<Tuple<double, double>> 
+            connectivityByAddingEdgesOrderly_local(bool addFromSmall, SortedDictionary<Tuple<string, string>, double> data)
+        {
+            //TODO: order by method of GraphView not implemented yet, have to sort locally here
+            List < Tuple < string, string, double>> edges = new List<Tuple<string, string, double>>();
+            HashSet<string> nodes = new HashSet<string>();
+
+           
+            foreach (var edge in data)
+            {
+                var src = edge.Key.Item1;
+                var dst = edge.Key.Item2;
+                var amount = edge.Value;
+
+                edges.Add(new Tuple<string, string, double>(src, dst, amount));
+                nodes.Add(src);
+                nodes.Add(dst);
+   
+            }
+
+            edges.Sort((x, y) => { return (addFromSmall ? 1 : -1) * x.Item3.CompareTo(y.Item3); });
+
+            List<Tuple<double, double>> ratiosAndsValues = new List<Tuple<double, double>>();
+
+            UnionFind gc = new UnionFind();
+
+            foreach (var node in nodes)
+            {
+                gc.Add(node);
+            }
+
+            foreach (var edge in edges)
+            {
+                string start = edge.Item1;
+                string end = edge.Item2;
+
+                gc.Union(start, end);
+                ratiosAndsValues.Add(new Tuple<double, double>(gc.GCRatio(), gc.sValue()));
+                debug.print("Connect " + start + " and " + end + ": " + edge.Item3 + " [" + gc.GCRatio() + " ]");
+            }
+            return ratiosAndsValues;
+        }
 
 
 
@@ -942,7 +985,14 @@ namespace NetworkScience
 
                 switch (args[0])
                 {
-                    case "split": { build_local(); key.SetValue(KEY_STAGE, 1); break; }
+                    case "split": {
+                            var data = build_local(); key.SetValue(KEY_STAGE, 1);
+                            connectivityByAddingEdgesOrderly_local(true, data);
+                            Parallel.Invoke(
+                                     () => writeResults(OUTPUT_ADD_FROM_WEAK+".local", connectivityByAddingEdgesOrderly_local(true,data)),
+                                     () => writeResults(OUTPUT_ADD_FROM_STRONG+".local", connectivityByAddingEdgesOrderly_local(false,data)));
+                            break;
+                        }
                     case "graph":
                         {
                             GraphViewConnection connection = new GraphViewConnection(DOCDB_URL, DOCDB_AUTHKEY, DOCDB_DATABASE, DOCDB_COLLECTION);
@@ -958,7 +1008,8 @@ namespace NetworkScience
                             Parallel.Invoke(
                                      () => writeResults(OUTPUT_ADD_FROM_WEAK, connectivityByAddingEdgesOrderly(true)),
                                      () => writeResults(OUTPUT_ADD_FROM_STRONG, connectivityByAddingEdgesOrderly(false)),
-                                     () => writeResults(OUTPUT_OVERLAP, overlapBetweenNodes())); key.SetValue(KEY_STAGE, 6);
+                                     () => writeResults(OUTPUT_OVERLAP, overlapBetweenNodes()));
+                            key.SetValue(KEY_STAGE, 6);
                             break;
                         }
                     case "check":

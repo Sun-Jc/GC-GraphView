@@ -210,7 +210,7 @@ namespace NetworkScience
         private const string OUTPUT_ADD_FROM_STRONG = @"gc_ADD_FROM_STRONG.csv";
         private const string OUTPUT_OVERLAP = @"overlap.csv";
 
-        private const int PAR = 128;
+        private const int PAR = 1024;
         private const string INTER_NODES = @"i_nodes.csv.";
         private const string INTER_EDGES = @"i_edges.csv.";
 
@@ -496,13 +496,13 @@ namespace NetworkScience
             debug.print("stage: " + key.GetValue(KEY_STAGE));
             for (int i = 0; i < PAR; i++)
             {
-                debug.print("par_node[" + i + "]: " + key.GetValue(KEY_PAR_NODE + i));
+                System.Console.WriteLine("par_node[" + i + "]: " + key.GetValue(KEY_PAR_NODE + i));
 
             }
             for (int i = 0; i < PAR; i++)
             {
 
-                debug.print("par_edge[" + i + "]: " + key.GetValue(KEY_PAR_EDGE + i));
+                System.Console.WriteLine("par_edge[" + i + "]: " + key.GetValue(KEY_PAR_EDGE + i));
             }
         }
 
@@ -876,72 +876,80 @@ namespace NetworkScience
 
         static void Main(string[] args)
         {
-            if (args.Count() >= 1 && args[0].Equals("clean"))
+            try
             {
-                System.Console.WriteLine("clear...");
-                clear();
-                return;
-            }
+                if (args.Count() >= 1 && args[0].Equals("clean"))
+                {
+                    System.Console.WriteLine("clear...");
+                    clear();
+                    return;
+                }
 
-            if (args.Count() >= 2 && args[0].Equals("node"))
+                if (args.Count() >= 2 && args[0].Equals("node"))
+                {
+                    //System.Console.WriteLine("Adding nodes part "+ args[1] + " ...");
+                    addNodePart(int.Parse(args[1]));
+                    return;
+                }
+
+                if (args.Count() >= 2 && args[0].Equals("edge"))
+                {
+                    //System.Console.WriteLine("Adding edges part " + args[1] + " ...");
+                    addEdgesPart(int.Parse(args[1]));
+                    return;
+                }
+
+                if (!isInited())
+                {
+                    System.Console.WriteLine("init...");
+                    initKey();
+                }
+
+                displayKey();
+
+                //int stage = (int)key.GetValue(KEY_STAGE, -1);
+
+                switch (args[0])
+                {
+                    case "split": { build_local(); key.SetValue(KEY_STAGE, 1); break; }
+                    case "node": { addNodeAll(PAR); key.SetValue(KEY_STAGE, 2); break; }
+                    case "edge": { addEdgesAll(PAR); key.SetValue(KEY_STAGE, 3); break; }
+                    case "connect": { validConnect(); key.SetValue(KEY_STAGE, 5); break; }
+                    case "compute":
+                        Parallel.Invoke(
+                                    () => writeResults(OUTPUT_ADD_FROM_WEAK, connectivityByAddingEdgesOrderly(true)),
+                                    () => writeResults(OUTPUT_ADD_FROM_STRONG, connectivityByAddingEdgesOrderly(false)),
+                                    () => writeResults(OUTPUT_OVERLAP, overlapBetweenNodes())); key.SetValue(KEY_STAGE, 6);
+                        break;
+                }
+
+
+                /*createGraph();
+                System.Console.WriteLine("Graph created\n");
+
+                mergeEdges();
+                System.Console.WriteLine("Edge Merged\n");
+
+                validConnect();
+                System.Console.WriteLine("Edge Evaluation Done\n");*/
+
+                /*Parallel.Invoke(
+                    () => writeResults(OUTPUT_ADD_FROM_WEAK, connectivityByAddingEdgesOrderly(true)),
+                    () => writeResults(OUTPUT_ADD_FROM_STRONG, connectivityByAddingEdgesOrderly(false)),
+                    () => writeResults(OUTPUT_OVERLAP, overlapBetweenNodes()));*/
+
+
+
+                //test();
+                var resx = countVE();
+                System.Console.WriteLine("nodes: " + resx.Item1 + "; edges: " + resx.Item2);
+
+            }
+            catch (Exception e)
             {
-                //System.Console.WriteLine("Adding nodes part "+ args[1] + " ...");
-                addNodePart(int.Parse(args[1]));
-                return;
+
             }
-
-            if (args.Count() >= 2 && args[0].Equals("edge"))
-            {
-                //System.Console.WriteLine("Adding edges part " + args[1] + " ...");
-                addEdgesPart(int.Parse(args[1]));
-                return;
-            }
-
-            if (!isInited())
-            {
-                System.Console.WriteLine("init...");
-                initKey();
-            }
-
-            displayKey();
-
-            //int stage = (int)key.GetValue(KEY_STAGE, -1);
-
-            switch (args[0])
-            {
-                case "split": { build_local(); key.SetValue(KEY_STAGE, 1); break; }
-                case "node": { addNodeAll(PAR); key.SetValue(KEY_STAGE, 2); break; }
-                case "edge": { addEdgesAll(PAR); key.SetValue(KEY_STAGE, 3); break; }
-                case "connect": { validConnect(); key.SetValue(KEY_STAGE, 5); break; }
-                case "compute":
-                    Parallel.Invoke(
-                                () => writeResults(OUTPUT_ADD_FROM_WEAK, connectivityByAddingEdgesOrderly(true)),
-                                () => writeResults(OUTPUT_ADD_FROM_STRONG, connectivityByAddingEdgesOrderly(false)),
-                                () => writeResults(OUTPUT_OVERLAP, overlapBetweenNodes())); key.SetValue(KEY_STAGE, 6);
-                    break;
-            }
-
-
-            /*createGraph();
-            System.Console.WriteLine("Graph created\n");
-
-            mergeEdges();
-            System.Console.WriteLine("Edge Merged\n");
-
-            validConnect();
-            System.Console.WriteLine("Edge Evaluation Done\n");*/
-
-            /*Parallel.Invoke(
-                () => writeResults(OUTPUT_ADD_FROM_WEAK, connectivityByAddingEdgesOrderly(true)),
-                () => writeResults(OUTPUT_ADD_FROM_STRONG, connectivityByAddingEdgesOrderly(false)),
-                () => writeResults(OUTPUT_OVERLAP, overlapBetweenNodes()));*/
-
-
-
-            //test();
-            var resx = countVE();
-            System.Console.WriteLine("nodes: " + resx.Item1 + "; edges: " + resx.Item2);
-
+            
 
 
             System.Console.Write("Finished");

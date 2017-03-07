@@ -627,18 +627,18 @@ namespace NetworkScience
                         inAmount = double.Parse(value, CultureInfo.InvariantCulture);
                     }
 
+                    graph.g().V().Has(NODE_PROPERTY, src).OutE(EDGE_LABEL).As("e").
+                           InV().Has(NODE_PROPERTY, dst).Select("e").Drop().Next();
+
+                    graph.g().V().Has(NODE_PROPERTY, dst).OutE(EDGE_LABEL).As("e").
+                        InV().Has(NODE_PROPERTY, src).Select("e").Drop().Next();
+
+
                     if (threshold_reached(inAmount, outAmount))
                     {
                         graph.g().V().Has(NODE_PROPERTY, src).
                             AddE(CONNECT_EDGE_LABEL).Property(CONNECT_EDGE_PROPERTY, inAmount + outAmount).
-                                To(graph.g().V().Has(NODE_PROPERTY, dst)).Next();
-
-                        graph.g().V().Has(NODE_PROPERTY, src).OutE(EDGE_LABEL).As("e").
-                            InV().Has(NODE_PROPERTY, dst).Select("e").Drop().Next();
-
-                        graph.g().V().Has(NODE_PROPERTY, dst).OutE(EDGE_LABEL).As("e").
-                            InV().Has(NODE_PROPERTY, src).Select("e").Drop().Next();
-
+                                To(graph.g().V().Has(NODE_PROPERTY, dst)).Next();                      
                         debug.print("Add connected edge: " + src + " <-> " + dst + " : " + (inAmount + outAmount));
                     }
                 }

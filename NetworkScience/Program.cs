@@ -16,7 +16,7 @@ namespace NetworkScience
 {
     class debug
     {
-        const bool isDebug = true;
+        const bool isDebug = false;
         const int IGNORE_PERIOD = 5000;
         static int count = 0;
         static public void print(string msg)
